@@ -3,23 +3,17 @@ import Product from "../models/product.js";
 
 const router = express.Router();
 
-// GET all products + search + price filter
-// Example URLs:
-//   GET /api/products
-//   GET /api/products?search=iphone
-//   GET /api/products?minPrice=10000&maxPrice=50000
+// GET all products
 router.get("/", async (req, res) => {
   try {
     const { search, minPrice, maxPrice } = req.query;
 
     const query = {};
 
-    // text search on name (case-insensitive)
     if (search) {
       query.name = { $regex: search, $options: "i" };
     }
 
-    // numeric filter on price
     if (minPrice || maxPrice) {
       query.price = {};
       if (minPrice) query.price.$gte = Number(minPrice);
@@ -29,6 +23,7 @@ router.get("/", async (req, res) => {
     const products = await Product.find(query);
     res.json(products);
   } catch (err) {
+    console.error("Error in GET /api/products:", err.message);
     res.status(500).json({ message: "Server Error" });
   }
 });
@@ -40,6 +35,7 @@ router.get("/:id", async (req, res) => {
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   } catch (err) {
+    console.error("Error in GET /api/products/:id:", err.message);
     res.status(500).json({ message: "Server Error" });
   }
 });
@@ -54,6 +50,7 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(created);
   } catch (err) {
+    console.error("Error in POST /api/products:", err.message);
     res.status(400).json({ message: "Invalid product data" });
   }
 });
@@ -74,6 +71,7 @@ router.put("/:id", async (req, res) => {
     const updated = await product.save();
     res.json(updated);
   } catch (err) {
+    console.error("Error in PUT /api/products/:id:", err.message);
     res.status(500).json({ message: "Server Error" });
   }
 });
@@ -87,6 +85,7 @@ router.delete("/:id", async (req, res) => {
     await product.deleteOne();
     res.json({ message: "Product removed" });
   } catch (err) {
+    console.error("Error in DELETE /api/products/:id:", err.message);
     res.status(500).json({ message: "Server Error" });
   }
 });

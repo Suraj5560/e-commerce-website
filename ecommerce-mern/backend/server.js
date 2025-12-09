@@ -13,13 +13,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Simple root route
+// Root test route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// PRODUCTS API ROUTES
-// All routes in productroutes.js start with /api/products
+// Mount product routes here
+// So: GET /api/products -> productRoutes GET "/"
 app.use("/api/products", productRoutes);
 
 const PORT = process.env.PORT || 5000;
